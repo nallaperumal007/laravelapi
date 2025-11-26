@@ -1,18 +1,13 @@
 <?php
-
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\NoteController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ItemController;
 
-Route::get('notes', [NoteController::class, 'index']);
+Route::post('/auth/register', [AuthController::class, 'register']);
+Route::post('/auth/login',    [AuthController::class, 'login']);
 
-
-Route::get('notes/{note}', [NoteController::class, 'show']);
-
-Route::post('notes', [NoteController::class, 'store']);
-
-
-Route::put('notes/{note}', [NoteController::class, 'update']);
-Route::patch('notes/{note}', [NoteController::class, 'update']);
-
-Route::delete('notes/{note}', [NoteController::class, 'destroy']);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/categories', [CategoryController::class, 'index']);
+    Route::get('/categories/{category:slug}/items', [ItemController::class, 'list']);
+});

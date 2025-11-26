@@ -1,64 +1,207 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# 📦 Catalog API
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+[![Laravel](https://img.shields.io/badge/Laravel-10-red.svg?style=flat)](https://laravel.com/)
+[![PHP](https://img.shields.io/badge/PHP-8.3-blue.svg)](https://www.php.net/)
+[![API](https://img.shields.io/badge/API-REST-green.svg)](#)
 
-## About Laravel
+A professional **Catalog API** built with **Laravel** for managing categories and items with user authentication using **Laravel Sanctum**.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🔹 Features
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+-   User registration & login with API token authentication
+-   Category listing
+-   Items listing by category
+-   Filter, search, sort, and pagination support for items
+-   Fully seeded database for testing
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## 🔹 Installation
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+```bash
+git clone https://github.com/yourusername/catalog-api.git
+cd catalog-api
+composer install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate --seed
+php artisan serve
+```
 
-## Laravel Sponsors
+API will be available at: `http://127.0.0.1:8000/api`
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+---
 
-### Premium Partners
+## 🔹 Authentication
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+### Register
 
-## Contributing
+**URL:** `POST /api/auth/register`
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+**Body:**
 
-## Code of Conduct
+```json
+{
+    "name": "John Doe",
+    "email": "john@example.com",
+    "password": "password123"
+}
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+**Response:**
 
-## Security Vulnerabilities
+```json
+{
+    "token": "1|somerandomapitoken123"
+}
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
 
-## License
+### Login
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+**URL:** `POST /api/auth/login`
+
+**Body:**
+
+```json
+{
+    "email": "john@example.com",
+    "password": "password123"
+}
+```
+
+**Response:**
+
+```json
+{
+    "token": "1|somerandomapitoken123"
+}
+```
+
+> 🔑 Use the returned `token` in the header for authenticated requests:
+
+```http
+Authorization: Bearer {token}
+```
+
+---
+
+## 🔹 Categories
+
+### List All Categories
+
+**URL:** `GET /api/categories`
+
+**Headers:**
+
+```http
+Authorization: Bearer {token}
+```
+
+**Response:**
+
+```json
+[
+    {
+        "id": 1,
+        "name": "Electronics",
+        "slug": "electronics"
+    },
+    {
+        "id": 2,
+        "name": "Furniture",
+        "slug": "furniture"
+    }
+]
+```
+
+---
+
+## 🔹 Items
+
+### List Items by Category
+
+**URL:** `GET /api/categories/{category_slug}/items`
+
+**Headers:**
+
+```http
+Authorization: Bearer {token}
+```
+
+**Query Parameters (optional):**
+
+| Parameter   | Type    | Description                                                  |
+| ----------- | ------- | ------------------------------------------------------------ |
+| `page`      | integer | Page number (default 1)                                      |
+| `per_page`  | integer | Items per page (default 10, max 50)                          |
+| `q`         | string  | Search by item name                                          |
+| `min_price` | float   | Minimum item price                                           |
+| `max_price` | float   | Maximum item price                                           |
+| `sort`      | string  | Sorting (`price_asc`, `price_desc`, `name_asc`, `name_desc`) |
+
+**Example Request:**
+
+```
+GET /api/categories/electronics/items?q=Item&min_price=10&max_price=500&sort=price_asc&page=1&per_page=5
+```
+
+**Response:**
+
+```json
+{
+    "current_page": 1,
+    "data": [
+        {
+            "id": 1,
+            "category_id": 1,
+            "name": "Electronics Item 1",
+            "price": 10.5
+        },
+        {
+            "id": 2,
+            "category_id": 1,
+            "name": "Electronics Item 2",
+            "price": 15.2
+        }
+    ],
+    "first_page_url": "/api/categories/electronics/items?page=1",
+    "last_page": 2,
+    "last_page_url": "/api/categories/electronics/items?page=2",
+    "per_page": 5,
+    "total": 10
+}
+```
+
+---
+
+## 🔹 Database Seeders
+
+-   **CategorySeeder:** Creates sample categories (`Electronics`, `Furniture`, `Clothing`, `Books`, `Groceries`)
+-   **ItemSeeder:** Creates 10 items per category with random prices
+
+---
+
+## 🔹 Contributing
+
+1. Fork the repository
+2. Create a new branch (`git checkout -b feature/YourFeature`)
+3. Commit your changes (`git commit -m 'Add some feature'`)
+4. Push to branch (`git push origin feature/YourFeature`)
+5. Open a Pull Request
+
+---
+
+## 🔹 License
+
+This project is licensed under the MIT License.
+Feel free to use, modify, and distribute.
+
+---
+
+## 🔹 Contact
+
+Created by **NallaPerumal** – [nallaperumal342@gmail.com](mailto:nallaperumal342@gmail.com)

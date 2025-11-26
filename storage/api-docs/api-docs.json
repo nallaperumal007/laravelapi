@@ -1,0 +1,270 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Billing API",
+        "description": "API documentation for Billing project",
+        "contact": {
+            "email": "support@example.com"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://127.0.0.1:8000/api",
+            "description": "Local server"
+        }
+    ],
+    "paths": {
+        "/api/auth/register": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Register a new user",
+                "operationId": "d764dd091cc4494ae0baf360b03319f3",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "token": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/api/auth/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Login user",
+                "operationId": "8dcb70df1020986038d098cc08d05dae",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "token": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid credentials"
+                    }
+                }
+            }
+        },
+        "/api/categories": {
+            "get": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Get all categories",
+                "operationId": "3f5817a34833d0a1f4af4548dd3aeaba",
+                "responses": {
+                    "200": {
+                        "description": "List of categories",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer"
+                                            },
+                                            "name": {
+                                                "type": "string"
+                                            },
+                                            "slug": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/categories/{category:slug}/items": {
+            "get": {
+                "tags": [
+                    "Items"
+                ],
+                "summary": "Get items by category",
+                "operationId": "fd367ea98a04b05b2ba4c96c5f7eebac",
+                "parameters": [
+                    {
+                        "name": "category:slug",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "min_price",
+                        "in": "query",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "max_price",
+                        "in": "query",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "price_asc",
+                                "price_desc",
+                                "name_asc",
+                                "name_desc"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated items",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Category not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Auth",
+            "description": "Authentication APIs"
+        },
+        {
+            "name": "Categories",
+            "description": "Category APIs"
+        },
+        {
+            "name": "Items",
+            "description": "Item APIs"
+        }
+    ]
+}
